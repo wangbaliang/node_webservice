@@ -1,0 +1,32 @@
+From 240c1245ea7db0d923f57eadc1a04e29dfb9619f Mon Sep 17 00:00:00 2001
+From: Adam Curtis <adam@mooloop.com>
+Date: Thu, 11 Aug 2016 10:47:37 +0100
+Subject: [PATCH] Fix exception with nodejs multiplexer
+
+THRIFT-3801 - Node Thrift client throws exception with multiplexer and responses that are bigger than a single buffer
+---
+ lib/nodejs/lib/thrift/connection.js | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/nodejs/lib/thrift/connection.js b/lib/nodejs/lib/thrift/connection.js
+index 23cb01c..08b26be 100644
+--- a/lib/nodejs/lib/thrift/connection.js
++++ b/lib/nodejs/lib/thrift/connection.js
+@@ -121,7 +121,6 @@ var Connection = exports.Connection = function(stream, options) {
+         var service_name = self.seqId2Service[header.rseqid];
+         if (service_name) {
+           client = self.client[service_name];
+-          delete self.seqId2Service[header.rseqid];
+         }
+         /*jshint -W083 */
+         client._reqs[dummy_seqid] = function(err, success){
+@@ -129,6 +128,9 @@ var Connection = exports.Connection = function(stream, options) {
+ 
+           var callback = client._reqs[header.rseqid];
+           delete client._reqs[header.rseqid];
++          if (service_name) {
++            delete self.seqId2Service[header.rseqid];
++          }
+           if (callback) {
+             callback(err, success);
+           }
