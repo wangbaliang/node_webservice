@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git@gitlab.easytech-main.com:webdev/et-tutor-web.git"
   },
-  "author": "Mars Yuan",
+  "author": "Wang BaLiang",
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "babel-register": "^6.18.0",
